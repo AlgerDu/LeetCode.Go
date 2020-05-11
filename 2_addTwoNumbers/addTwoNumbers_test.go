@@ -30,8 +30,8 @@ func TestExample(t *testing.T) {
 
 func TestExample2(t *testing.T) {
 
-	ll1 := []int{1, 8}
-	ll2 := []int{0}
+	ll1 := []int{0}
+	ll2 := []int{7, 3}
 
 	l1 := &ListNode{ll1[0], nil}
 	l2 := &ListNode{ll2[0], nil}
