@@ -1,4 +1,4 @@
-package leetcodegobase
+package utils
 
 import (
 	"strconv"
