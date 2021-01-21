@@ -65,9 +65,9 @@ func TestExample_03(t *testing.T) {
 }
 
 func TestExample_04(t *testing.T) {
-	pointsStr := "3,12,-2,5,-4,1"
+	pointsStr := "-1000000,-1000000,1000000,1000000"
 
-	desire := 18
+	desire := 4000000
 
 	output := minCostConnectPoints(Anaylse(pointsStr))
 
@@ -77,9 +77,45 @@ func TestExample_04(t *testing.T) {
 }
 
 func TestExample_05(t *testing.T) {
-	pointsStr := "3,12,-2,5,-4,1"
+	pointsStr := "0,0"
 
-	desire := 18
+	desire := 0
+
+	output := minCostConnectPoints(Anaylse(pointsStr))
+
+	if desire != output {
+		t.Errorf("output %d is not equal %d", output, desire)
+	}
+}
+
+func TestExample_06(t *testing.T) {
+	pointsStr := "0,0,2,2,3,10,15,2,17,0"
+
+	desire := 30
+
+	output := minCostConnectPoints(Anaylse(pointsStr))
+
+	if desire != output {
+		t.Errorf("output %d is not equal %d", output, desire)
+	}
+}
+
+func TestExample_07(t *testing.T) {
+	pointsStr := "-14,-14,-18,5,18,-10,18,18,10,-2"
+
+	desire := 102
+
+	output := minCostConnectPoints(Anaylse(pointsStr))
+
+	if desire != output {
+		t.Errorf("output %d is not equal %d", output, desire)
+	}
+}
+
+func TestExample_08(t *testing.T) {
+	pointsStr := "5,8,18,-6,-18,13,-8,-13,-13,3,-15,2,-12,17,14,16,-4,3,-17,-7,8,9,17,14,-13,2,-3,-1,4,-20"
+
+	desire := 102
 
 	output := minCostConnectPoints(Anaylse(pointsStr))
 

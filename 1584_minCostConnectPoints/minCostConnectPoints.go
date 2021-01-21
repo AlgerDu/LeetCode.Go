@@ -12,9 +12,10 @@ func minCostConnectPoints(points [][]int) int {
 
 	costs := make([][]int, length)
 	groupMarks := make([]int, length)
+	groupChain := make([]int, length)
 	groupCosts := make([]int, length/2+1)
 	groupStartPoint := make([]int, length/2+1)
-	groupIndex := 1
+	groupIndex := 0
 
 	for i := 0; i < length; i++ {
 
@@ -46,23 +47,39 @@ func minCostConnectPoints(points [][]int) int {
 		if groupMarks[i] == groupMarks[minJ] && groupMarks[i] != 0 {
 
 		} else if groupMarks[i] == 0 && groupMarks[minJ] == 0 {
+			groupIndex++
+
 			groupMarks[i] = groupIndex
 			groupMarks[minJ] = groupIndex
 
-			costs[i][i] = minJ
+			groupChain[i] = minJ
+			groupChain[minJ] = -1
 
 			groupCosts[groupIndex] = minCost
 			groupStartPoint[groupIndex] = i
 
-			groupIndex++
 		} else if groupMarks[i] == 0 {
 			groupMarks[i] = groupMarks[minJ]
-			costs[minJ][minJ] = i
+
+			end := minJ
+			for groupChain[end] != -1 {
+				end = groupChain[end]
+			}
+			groupChain[end] = i
+
+			groupChain[i] = -1
 
 			groupCosts[groupMarks[minJ]] += minCost
 		} else if groupMarks[minJ] == 0 {
 			groupMarks[minJ] = groupMarks[i]
-			costs[i][i] = minJ
+
+			end := i
+			for groupChain[end] != -1 {
+				end = groupChain[end]
+			}
+			groupChain[end] = minJ
+
+			groupChain[minJ] = -1
 
 			groupCosts[groupMarks[i]] += minCost
 		} else {
@@ -79,20 +96,62 @@ func minCostConnectPoints(points [][]int) int {
 
 			end := i
 
-			for costs[end][end] != 0 {
-				end = costs[end][end]
+			for groupChain[end] != -1 {
+				end = groupChain[end]
 			}
 
-			costs[end][end] = groupStartPoint[maxIndex]
+			groupChain[end] = groupStartPoint[maxIndex]
 
-			for costs[end][end] != 0 {
-				end = costs[end][end]
+			for groupChain[end] != -1 {
+				end = groupChain[end]
 
 				groupMarks[end] = minIndex
 			}
 
+			for maxIndex < groupIndex {
+				groupStartPoint[maxIndex] = groupStartPoint[maxIndex+1]
+
+				maxIndex++
+			}
+
 			groupIndex--
 		}
+	}
+
+	for groupIndex > 1 {
+		minCost := 2000000
+		minIndex := groupIndex - 1
+
+		for compareIndex := groupIndex - 1; compareIndex > 0; compareIndex-- {
+			i := groupStartPoint[groupIndex]
+
+			for i != -1 {
+				j := groupStartPoint[compareIndex]
+
+				for j != -1 {
+					if costs[i][j] < minCost {
+						minCost = costs[i][j]
+						minIndex = compareIndex
+					}
+
+					j = groupChain[j]
+				}
+
+				i = groupChain[i]
+			}
+		}
+
+		groupCosts[minIndex] += minCost + groupCosts[groupIndex]
+
+		end := groupStartPoint[minIndex]
+
+		for groupChain[end] != -1 {
+			end = groupChain[end]
+		}
+
+		groupChain[end] = groupStartPoint[groupIndex]
+
+		groupIndex--
 	}
 
 	return groupCosts[1]
