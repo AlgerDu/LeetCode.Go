@@ -36,7 +36,9 @@ func minCostConnectPoints(points [][]int) int {
 			costs[i][j] = cost
 		}
 
-		if groupMarks[i] == 0 && groupMarks[minJ] == 0 {
+		if groupMarks[i] == groupMarks[minJ] && groupMarks[i] != 0 {
+
+		} else if groupMarks[i] == 0 && groupMarks[minJ] == 0 {
 			groupMarks[i] = groupIndex
 			groupMarks[minJ] = groupIndex
 
