@@ -3,6 +3,13 @@ package leetcode
 func minCostConnectPoints(points [][]int) int {
 
 	length := len(points)
+
+	if length == 1 {
+		return 0
+	} else if length == 2 {
+		return cost(points[0], points[1])
+	}
+
 	costs := make([][]int, length)
 	groupMarks := make([]int, length)
 	groupCosts := make([]int, length/2+1)
