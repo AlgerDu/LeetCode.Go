@@ -115,7 +115,7 @@ func TestExample_07(t *testing.T) {
 func TestExample_08(t *testing.T) {
 	pointsStr := "5,8,18,-6,-18,13,-8,-13,-13,3,-15,2,-12,17,14,16,-4,3,-17,-7,8,9,17,14,-13,2,-3,-1,4,-20"
 
-	desire := 102
+	desire := 143
 
 	output := minCostConnectPoints(Anaylse(pointsStr))
 
