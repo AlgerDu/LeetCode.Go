@@ -90,13 +90,20 @@ func minCostConnectPoints(points [][]int) int {
 }
 
 func cost(r []int, l []int) int {
-	if r[0] > l[0] && r[1] > l[1] {
-		return r[0] - l[0] + r[1] - l[1]
-	} else if r[0] > l[0] {
-		return r[0] - l[0] + l[1] - r[1]
-	} else if r[1] > l[1] {
-		return l[0] - r[0] + r[1] - l[1]
+
+	cost := 0
+
+	if r[0] > l[0] {
+		cost += r[0] - l[0]
 	} else {
-		return l[0] - r[0] + l[1] - r[1]
+		cost += l[0] - r[0]
 	}
+
+	if r[1] > l[1] {
+		cost += r[1] - l[1]
+	} else {
+		cost += l[1] - r[1]
+	}
+
+	return cost
 }
