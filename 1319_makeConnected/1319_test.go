@@ -82,3 +82,29 @@ func TestExample_04(t *testing.T) {
 		t.Errorf("output %d is not equal %d", output, desire)
 	}
 }
+
+func TestExample_05(t *testing.T) {
+	connectionsStr := "[[0,1],[0,2],[0,3],[1,2],[1,3]]"
+	n := 6
+
+	desire := 2
+
+	output := makeConnected(n, Anaylse(connectionsStr))
+
+	if desire != output {
+		t.Errorf("output %d is not equal %d", output, desire)
+	}
+}
+
+func TestExample_06(t *testing.T) {
+	connectionsStr := "[[0,1],[0,2],[4,5],[1,2],[1,3]]"
+	n := 6
+
+	desire := 1
+
+	output := makeConnected(n, Anaylse(connectionsStr))
+
+	if desire != output {
+		t.Errorf("output %d is not equal %d", output, desire)
+	}
+}
