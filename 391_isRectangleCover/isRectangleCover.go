@@ -5,6 +5,10 @@ func isRectangleCover(rectangles [][]int) bool {
 	rectangleCount := len(rectangles)
 	edgeCount := rectangleCount * 4
 
+	if rectangleCount == 1 {
+		return true
+	}
+
 	resultEdges := make([]bool, 4)
 	edgeCheckState := make([]bool, edgeCount)
 
@@ -17,6 +21,7 @@ func isRectangleCover(rectangles [][]int) bool {
 			continue
 		}
 
+		edgeCheckState[i] = true
 		group1[0] = i
 
 		edgeCode := i % 4
@@ -30,7 +35,7 @@ func isRectangleCover(rectangles [][]int) bool {
 
 		for j := rectangleIndex + 1; j < rectangleCount; j++ {
 
-			toCheckEdgeIndex := rectangleIndex*4 + edgeCode
+			toCheckEdgeIndex := j*4 + edgeCode
 
 			if !edgeCheckState[toCheckEdgeIndex] && rectangles[j][vIndex] == v {
 				edgeCheckState[toCheckEdgeIndex] = true
@@ -39,11 +44,11 @@ func isRectangleCover(rectangles [][]int) bool {
 				continue
 			}
 
-			toCheckEdgeIndex = rectangleIndex*4 + (edgeCode+2)%4
+			toCheckEdgeIndex = j*4 + (edgeCode+2)%4
 
 			if !edgeCheckState[toCheckEdgeIndex] && rectangles[j][(vIndex+2)%4] == v {
 				edgeCheckState[toCheckEdgeIndex] = true
-				group2[group1Count] = toCheckEdgeIndex
+				group2[group2Count] = toCheckEdgeIndex
 				group2Count++
 			}
 		}
@@ -52,14 +57,19 @@ func isRectangleCover(rectangles [][]int) bool {
 			return false
 		}
 
-		vStart := (edgeCode + 1) / 4
-		vEnd := (edgeCode + 3) / 4
+		vStart := 1
+		vEnd := 3
+
+		if edgeCode == 1 || edgeCode == 3 {
+			vStart = 0
+			vEnd = 2
+		}
 
 		edgeStartValue := rectangles[group1[0]/4][vStart]
 
 		for j := 1; j < group1Count; j++ {
 
-			toCompare := rectangles[group1[0]/4][vStart]
+			toCompare := rectangles[group1[j]/4][vStart]
 
 			if toCompare < edgeStartValue {
 				edgeStartValue = toCompare
@@ -105,7 +115,7 @@ func isRectangleCover(rectangles [][]int) bool {
 
 		for j := 1; j < group2Count; j++ {
 
-			toCompare := rectangles[group2[0]/4][vStart]
+			toCompare := rectangles[group2[j]/4][vStart]
 
 			if toCompare < edge2StartValue {
 				edge2StartValue = toCompare
