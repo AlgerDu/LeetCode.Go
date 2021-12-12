@@ -2,162 +2,104 @@ package leetcode
 
 func isRectangleCover(rectangles [][]int) bool {
 
-	rectangleCount := len(rectangles)
-	edgeCount := rectangleCount * 4
+	rectangleCout := len(rectangles)
 
-	if rectangleCount == 1 {
+	if rectangleCout == 1 {
 		return true
 	}
 
-	resultEdges := make([]bool, 4)
-	edgeCheckState := make([]bool, edgeCount)
+	scanLineYs := make([]int, 2)
+	scanLineX := 0
 
-	group1 := make([]int, rectangleCount)
-	group2 := make([]int, rectangleCount)
+	for i := 0; i < rectangleCout; i++ {
+		minIndex := i
 
-	for i := 0; i < edgeCount; i++ {
+		for j := i + 1; j < rectangleCout; j++ {
 
-		if edgeCheckState[i] {
-			continue
-		}
-
-		edgeCheckState[i] = true
-		group1[0] = i
-
-		edgeCode := i % 4
-		rectangleIndex := i / 4
-
-		group1Count := 1
-		group2Count := 0
-
-		vIndex := (4 - edgeCode) % 4
-		v := rectangles[rectangleIndex][vIndex]
-
-		for j := rectangleIndex + 1; j < rectangleCount; j++ {
-
-			toCheckEdgeIndex := j*4 + edgeCode
-
-			if !edgeCheckState[toCheckEdgeIndex] && rectangles[j][vIndex] == v {
-				edgeCheckState[toCheckEdgeIndex] = true
-				group1[group1Count] = toCheckEdgeIndex
-				group1Count++
-				continue
-			}
-
-			toCheckEdgeIndex = j*4 + (edgeCode+2)%4
-
-			if !edgeCheckState[toCheckEdgeIndex] && rectangles[j][(vIndex+2)%4] == v {
-				edgeCheckState[toCheckEdgeIndex] = true
-				group2[group2Count] = toCheckEdgeIndex
-				group2Count++
-			}
-		}
-
-		if group2Count == 0 && resultEdges[edgeCode] {
-			return false
-		}
-
-		vStart := 1
-		vEnd := 3
-
-		if edgeCode == 1 || edgeCode == 3 {
-			vStart = 0
-			vEnd = 2
-		}
-
-		edgeStartValue := rectangles[group1[0]/4][vStart]
-
-		for j := 1; j < group1Count; j++ {
-
-			toCompare := rectangles[group1[j]/4][vStart]
-
-			if toCompare < edgeStartValue {
-				edgeStartValue = toCompare
-				tmpIndex := group1[0]
-				group1[0] = group1[j]
-				group1[j] = tmpIndex
-			}
-		}
-
-		edgeEndValue := rectangles[group1[0]/4][vEnd]
-
-		for j := 1; j < group1Count; j++ {
-			k := j
-			for ; k < group1Count; k++ {
-				toCompare := rectangles[group1[k]/4][vStart]
-
-				if toCompare < edgeEndValue {
-					return false
-				}
-
-				if toCompare == edgeEndValue {
-					break
-				}
-			}
-
-			if k == group1Count {
+			if rectangles[j][0] == rectangles[minIndex][0] &&
+				rectangles[j][1] == rectangles[minIndex][1] {
 				return false
 			}
 
-			edgeEndValue = rectangles[group1[k]/4][vEnd]
-
-			tmpIndex := group1[j]
-			group1[j] = group1[k]
-			group1[k] = tmpIndex
-		}
-
-		if group2Count == 0 {
-			resultEdges[edgeCode] = true
-			continue
-		}
-
-		edge2StartValue := rectangles[group2[0]/4][vStart]
-
-		for j := 1; j < group2Count; j++ {
-
-			toCompare := rectangles[group2[j]/4][vStart]
-
-			if toCompare < edge2StartValue {
-				edge2StartValue = toCompare
-				tmpIndex := group2[0]
-				group2[0] = group2[j]
-				group2[j] = tmpIndex
+			if rectangles[j][0] < rectangles[minIndex][0] {
+				minIndex = j
 			}
 		}
 
-		if edgeStartValue != edge2StartValue {
-			return false
+		if minIndex != i {
+			tmp := rectangles[i]
+			rectangles[i] = rectangles[minIndex]
+			rectangles[minIndex] = tmp
+		}
+	}
+
+	scanLineX = rectangles[0][0]
+	scanLineYs[0] = rectangles[0][1]
+	scanLineYs[1] = rectangles[0][3]
+
+	for i := 1; i < rectangleCout; i++ {
+		if rectangles[i][3] > scanLineYs[1] {
+			scanLineYs[1] = rectangles[i][3]
 		}
 
-		edge2EndValue := rectangles[group2[0]/4][vEnd]
+		if rectangles[i][1] < scanLineYs[0] {
+			scanLineYs[0] = rectangles[i][1]
+		}
+	}
 
-		for j := 1; j < group2Count; j++ {
-			k := j
-			for ; k < group2Count; k++ {
-				toCompare := rectangles[group2[k]/4][vStart]
+	for i := 0; i < rectangleCout; {
 
-				if toCompare < edge2EndValue {
-					return false
-				}
+		for j := i; j < rectangleCout && rectangles[j][0] == scanLineX; j++ {
 
-				if toCompare == edge2EndValue {
-					break
+			minIndex := j
+
+			for k := j + 1; k < rectangleCout && rectangles[k][0] == scanLineX; k++ {
+				if rectangles[k][1] < rectangles[minIndex][1] {
+					minIndex = k
 				}
 			}
 
-			if k == group2Count {
+			if minIndex != j {
+				tmp := rectangles[j]
+				rectangles[j] = rectangles[minIndex]
+				rectangles[minIndex] = tmp
+			}
+		}
+
+		nextScanLineX := rectangles[i][2]
+		y := scanLineYs[0]
+
+		j := i
+		for ; j < rectangleCout && rectangles[j][0] == scanLineX; j++ {
+			if rectangles[j][1] == y {
+				y = rectangles[j][3]
+			} else {
 				return false
 			}
 
-			edge2EndValue = rectangles[group2[k]/4][vEnd]
-
-			tmpIndex := group2[j]
-			group2[j] = group2[k]
-			group2[k] = tmpIndex
+			if rectangles[j][2] < nextScanLineX {
+				nextScanLineX = rectangles[j][2]
+			}
 		}
 
-		if edgeEndValue != edge2EndValue {
+		if y != scanLineYs[1] {
 			return false
+		}
+
+		scanLineX = nextScanLineX
+
+		for k := i; k < j; k++ {
+			if rectangles[k][2] == scanLineX {
+
+				if k != i {
+					rectangles[k] = rectangles[i]
+				}
+				rectangles[i] = nil
+				i++
+
+			} else {
+				rectangles[k][0] = scanLineX
+			}
 		}
 	}
 

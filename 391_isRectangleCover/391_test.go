@@ -94,3 +94,29 @@ func TestExample_41(t *testing.T) {
 		t.Errorf("result %t is not equal %t", result, desire)
 	}
 }
+
+func TestExample_43(t *testing.T) {
+
+	inputStr := "[[1,2,4,4],[1,0,4,1],[0,2,1,3],[0,1,3,2],[3,1,4,2],[0,3,1,4],[0,0,1,1]]"
+
+	desire := true
+
+	result := isRectangleCover(Anaylse(inputStr))
+
+	if desire != result {
+		t.Errorf("result %t is not equal %t", result, desire)
+	}
+}
+
+func TestExample_44(t *testing.T) {
+
+	inputStr := "[[0,2,3,4],[0,1,4,2],[3,3,4,4],[0,0,3,1],[3,0,4,1],[3,2,4,3]]"
+
+	desire := true
+
+	result := isRectangleCover(Anaylse(inputStr))
+
+	if desire != result {
+		t.Errorf("result %t is not equal %t", result, desire)
+	}
+}
