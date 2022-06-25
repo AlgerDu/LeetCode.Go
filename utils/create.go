@@ -47,3 +47,26 @@ func CreateTree(treeStr string) *TreeNode {
 
 	return root
 }
+
+func CreateMatrix(intput string, n int) [][]int {
+	intput = strings.ReplaceAll(intput, "[", "")
+	intput = strings.ReplaceAll(intput, "]", "")
+
+	numArray := strings.Split(intput, ",")
+
+	count := len(numArray)
+	array := make([][]int, count/n)
+
+	for i := 0; i < count; i++ {
+
+		if i%n == 0 {
+			array[i/n] = make([]int, n)
+		}
+
+		num, _ := strconv.Atoi(numArray[i])
+
+		array[i/n][i%n] = num
+	}
+
+	return array
+}
